@@ -1,0 +1,217 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{%  block styles %}
+	.disabled {
+		pointer-events:none;
+		opacity:0.1;
+	}
+
+	tfoot{
+	transition: 2s,
+	}
+
+	.icon {
+	  position: relative;
+	  top: 5px;
+	  left: -3px;
+	}
+{%  endblock styles %}
+
+
+{%  block content %}
+
+	<table id="cart" class="table table-hover table-condensed" >
+    				<thead>
+						<tr>
+							<th style="width:40%">Product</th>
+							<th style="width:10%">Price</th>
+							<th style="width:10%">Size</th>
+							<th style="width:10%">Quantity</th>
+							<th style="width:10%" class="text-center">Subtotal</th>
+							<th style="width:10%"></th>
+						</tr>
+					</thead>
+
+					<tbody>
+					{% for item in items %}
+						<tr class="Product">
+							<td>
+								<div class="row">
+									<div class="col-sm-2 hidden-xs"><img src="{{  item.product.pimage}}"  height="100px" width="100px" alt="..." class="img-responsive"/></div>
+									<div class="col-sm-10">
+										<h4 class="nomargin ml-5 "> {{ item.product.name}}</h4>
+									</div>
+								</div>
+							</td>
+							<td data-price="{{ item.price }}">$ {{ item.price }}</td>
+							<td data-size="{{ item.size }}">{{ item.size }}</td>
+
+							<!-- Plus and Minus  -->
+							<td class="Quantity">
+								<div class="d-flex">
+									<a data-product_id="{{item.product.id}}" class="mt-1 mx-1 plus-cart"  ><span class="material-icons" >add_circle</span></a>
+									<input style="width:30%" type="number" class="text-center" value="{{item.quantity}}" min="1" max="5" readonly>
+									<a data-product_id="{{item.product.id}}" class="mt-1 mx-1 minus-cart" ><span class="material-icons">remove_circle</span></a>
+								</div>
+							</td>
+							<!--   -->
+
+							<td  class="text-center Subtotal">$ {{ item.sub_total }}</td>
+							<td class="actions" >
+								<button class="btn btn-info btn-sm" ><span class="material-icons">
+										refresh
+									</span>
+								</button>
+
+								<!-- remove item  -->
+								<button class="btn btn-danger btn-sm remove-cart" data-product_id="{{item.product.id}}">
+									<span class="material-icons">
+									delete
+									</span>
+								</button>
+								<!--   -->
+							</td>
+						</tr>
+		{% endfor %}
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td><a href="{{request.META.HTTP_REFERER}}" class="btn btn-warning"><span class="material-icons icon">
+									keyboard_backspace
+							</span>Continue Shopping</a></td>
+							<td colspan="2" class="hidden-xs"></td>
+							<td id='total_cash' class="hidden-xs text-center"><strong>Total $ {{ sum_of_cart_items}}</strong></td>
+							<td>
+								<a href="{% url 'checkout' %}" class="btn btn-success btn-block">
+									<span class="material-icons icon">shopping_cart</span>
+										Checkout
+
+								</a>
+							</td>
+						</tr>
+					</tfoot>
+
+				</table>
+
+<script>
+
+	$('.plus-cart').click(function(){
+	// plus-cart is repeated through out
+	var $plus_cart = $(this);
+
+	var product_id =   $plus_cart.attr('data-product_id');
+	var price    =   $plus_cart.parents('.Quantity').siblings().eq(1).attr('data-price');
+	var size     =   $plus_cart.parents('.Quantity').siblings().eq(2).attr('data-size');
+
+	var formData = {
+	  "product_id" : product_id,
+	  "price" : price,
+	  "size" : size,
+	  "operation":"add",
+	};
+	console.log(price);
+	 var url = "/cart_operation/";  				// The view name which will process the data
+	 call_ajax($plus_cart ,formData,url);
+
+	});
+
+
+	$('.minus-cart').click(function(){
+	// minus-cart is repeated through out
+	var $minus_cart = $(this);
+
+	var product_id =   $minus_cart.attr('data-product_id');
+	var price    =   $minus_cart.parents('.Quantity').siblings().eq(1).attr('data-price');
+	var size     =   $minus_cart.parents('.Quantity').siblings().eq(2).attr('data-size');
+
+	var formData = {
+	  "product_id" : product_id,
+	  "price" : price,
+	  "size" : size,
+	  "operation":"sub",
+	};
+
+	 var url = "/cart_operation/";   // The view name which will process the data
+	 call_ajax($minus_cart, formData, url);
+	});
+
+
+	$('.remove-cart').click(function(){
+	var $remove_cart = $(this);
+
+	var product_id =   $remove_cart.attr('data-product_id');
+	var price    =     $remove_cart.parent().siblings().eq(1).attr('data-price');
+	var size     =     $remove_cart.parent().siblings().eq(2).attr('data-size');
+	console.log(product_id,price,size);
+	var formData = {
+	  "product_id" : product_id,
+	  "price" : price,
+	  "size" : size,
+	  "operation":"remove",
+	};
+
+	 var url = "/cart_operation/"
+	 call_ajax($remove_cart, formData, url);
+
+	});
+
+
+	function call_ajax($cart ,formData,url){
+		$.ajax({
+				   url:url,
+				   type:'get',
+				   data:formData,
+
+				   // Apply loader before sending
+				   beforeSend: function() {
+                       $('.semi-transparent').animate({
+                                opacity: 0.5,
+                              });
+                       $('#loader').fadeIn();
+					},
+				   success:function (data) {
+				   //Set sub_total
+				   //Already visible, hide() it first than fadeIn()
+				   $cart.parents('.Quantity').siblings('.Subtotal').hide().fadeIn().text("$ " + parseFloat(data.sub_total).toFixed(2));
+
+				   //Set quantity
+				   // incriment-decriment
+				   $cart.parent().children().eq(1).val(data.quantity);
+				   //Cart Quantity
+				   $('#cart').find('span').text(data.Quantity);
+
+				   //Set Total
+				   $cart.parents('tbody').siblings('tfoot').find('.text-center').hide().fadeIn().html(`<strong>Total $ ${data.sum_of_cart_items}</strong>`);
+
+					// Delete product
+				   	if(data.delete == 'True'){
+
+					$cart.parents('.Product').hide('slow', function(){
+					 $(this).remove();
+					 });
+
+					 };
+					},
+
+					//Stop when completed
+					complete: function(){
+                        $('.semi-transparent').animate({
+                            opacity: 1,
+                          });
+                        $('#loader').fadeOut();
+
+					},
+
+				   error:function (error) {
+				   console.log(error)
+				   }
+			});
+	};
+
+</script>
+
+{%  endblock content %}
+

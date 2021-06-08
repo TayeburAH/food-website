@@ -1,0 +1,83 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load extra_tags %}
+
+{%  block styles %}
+
+{%  endblock styles %}
+
+{%  block content %}
+<div class="container">
+ <div class="row mt-5">
+  <div class="col-sm-6">
+    <h4>Order Summary</h4>
+    <hr>
+    {% for item in items %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>{{ item.product.name}}</h5>
+          <p>Quantity: {{ item.quantity}}</p>
+          <p class="fw-bold">Price: $ {{ item.sub_total}}</p>
+        </div>
+      </div>
+    {% endfor %}
+      <p class="fw-bold">Price: $ {{ sum_of_cart_items}} + $ {{ shipping_charge }}(shipping) =<strong>$ {%  add  sum_of_cart_items  shipping_charge  %}</strong> </p>
+
+    <small>Term and Condition: Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, ullam saepe! Iure optio repellat dolor velit, minus rem. Facilis cumque neque numquam laboriosam, accusantium adipisci nisi nihil in et quis?</small>
+  </div>
+      <div class="col-sm-4 offset-sm-1">
+        <h4>Select Shipping Address</h4>
+        <hr>
+
+              <div class="card">
+                  <div class="card-body address">
+                      <h5>{{ customer.first_name}} {{ customer.last_name  }}</h5>
+                      <p>Dhaka Division : {{ customer.division}}</p>
+                      <p data-city="{{ customer.city }}">City : {{ customer.city }}</p>
+                      <p data-zip="{{ customer.zip }}">Zip code : {{ customer.zip}}</p>
+                      <p data-addr="{{  customer.address }}">Address : {{ customer.address}}</p>
+                      <a href="{% url 'edit_profile' %}" type="button" class="btn btn-secondary ml-auto">Edit</a>
+                  </div>
+              </div>
+              <form action='{% url "order_tracker" %}' method="POST">
+                  <div class="text-end">{% csrf_token %}
+                      <input  name="order_id" value="{{ id }}" hidden>
+                      <p class="ml-2 mt-2">How would you like to pay? </p>
+                            <div class="form-check ml-2">
+                                  <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="Cash" value="cash">Cash on delivery
+                                  </label>
+                            </div>
+                            <div class="form-check ml-2">
+                                  <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="Cash" value="PayPal">PayPal
+                                  </label>
+                            </div>
+                      <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">Continue</button>
+                  </div>
+              </form>
+      </div>
+  </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function(){
+    $('form').submit(function(e){
+     var $addr = $('.address');
+     var $form = $(this);
+    // check if all the fields are filled using OR
+     if( $addr.children('p').eq(1).attr('data-city')=='None' || $addr.children('p').eq(2).attr('data-zip')=='None' || $addr.children('p').eq(3).attr('data-addr')=='None' || $form.find('input[name=Cash]:checked').val() == undefined){
+
+        alert('Please fill up the missing fields');
+        e.preventDefault();
+
+        }
+    });
+
+});
+
+</script>
+
+{%  endblock content %}

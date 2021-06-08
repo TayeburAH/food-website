@@ -1,0 +1,1 @@
+[{"model": "account.zip", "pk": 1, "fields": {"city": 3, "name": "1216"}}, {"model": "account.zip", "pk": 2, "fields": {"city": 16, "name": "1212"}}, {"model": "account.zip", "pk": 3, "fields": {"city": 15, "name": "1213"}}, {"model": "account.zip", "pk": 4, "fields": {"city": 2, "name": "1230"}}]

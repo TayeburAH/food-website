@@ -1,0 +1,87 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{%  block styles %}
+{%  endblock styles %}
+
+
+
+
+{%  block content %}
+
+<div class="container-fluid">
+
+        <div class='' style="width:60%">
+              <div class="row">
+                  {%  for product in products %}
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                                  <div class="card m-2">
+                                    <img class="card-img" src="{{  product.pimage }}" alt="Vans">
+                                            <div class="card-body">
+                                                <h4 class="card-title">{{product.name}}</h4>
+                                                <p class="card-text">
+                                                  The Vans All-Weather MTE Collection features footwear and apparel designed to withstand the elements whilst still looking cool.</p>
+                                                    <div class="d-flex justify-content-center">
+
+                                                                <form class="product-form">
+                                                                    <input type="hidden" name="product-id" value="{{ product.id }}" id="product-id">
+                                                                    <div class="form-group">
+                                                                        {%  for item in product.info_set.all %}
+                                                                            {% if forloop.first %}
+                                                                            <div class="form-check form-check-inline">
+
+                                                                              <input class="form-check-input m-2" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="{{ item.price  }}" data-size-type="{{ item.size }}">
+                                                                              <label class="form-check-label" for="inlineRadio1">{{ item.size  }}</label>
+                                                                            </div>
+                                                                            {% endif %}
+
+                                                                            {% if forloop.counter == 2 %}
+                                                                            <div class="form-check form-check-inline">
+                                                                              <input class="form-check-input m-2" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="{{ item.price  }}"data-size-type="{{ item.size }}">
+                                                                              <label class="form-check-label" for="inlineRadio2">{{ item.size  }}</label>
+                                                                            </div>
+                                                                            {% endif %}
+
+                                                                            {% if forloop.last %}
+                                                                            <div class="form-check form-check-inline">
+                                                                              <input class="form-check-input m-2" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="{{ item.price  }}" data-size-type="{{ item.size }}">
+                                                                              <label class="form-check-label" for="inlineRadio3">{{ item.size  }}</label>
+                                                                            </div>
+                                                                            {% endif %}
+
+                                                                        {%  endfor %}
+                                                                    </div>
+                                                                    <div class="row float-left">
+                                                                        <p class="show-price mt-1" style="width:100%;font-style: italic;color:orange;"></p>
+                                                                    </div>
+
+                                                                    <div class="float-right">
+                                                                        <button class="btn btn-danger w-100 " type="submit" > Add to Cart</button>
+                                                                    </div>
+                                                                </form>
+
+                                                      </div>
+
+
+                                            </div>
+                                    </div>
+                        </div>
+
+         {%  if forloop.counter|divisibleby:"2" and not forloop.last %}
+              </div>
+              <div class="row">
+              {% endif %}
+        {%  endfor %}
+              </div>
+
+
+        </div>
+
+
+</div>
+
+
+{%  endblock content %}
+
+

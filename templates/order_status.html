@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load extra_tags %}
+
+{%  block styles %}
+.card-body .card-text{
+    display:inline;
+}
+{%  endblock styles %}
+
+
+
+{%  block content %}
+
+<div class="container ml-auto">
+ <div class="row mt-5">
+  <div class="col-sm-6">
+    <h4>Order Status</h4>
+    <hr>
+      {%  for order in orderplaced %}
+        <div class="card my-4">
+          <div class="card-header">
+              Order ID : {{ order.order_id}}
+          </div>
+            {%  for item in order.cartitems_set.all %}
+          <div class="card-body">
+            <img src="{{  item.product.pimage}}"  height="100px" width="100px" alt="..." class="img-responsive"/>
+            <p class="card-text ml-3">{{ item.quantity }} x $ {{ item.price }}({{ item.size }})</p>
+            <h5 class="card-title">{{ item.product.name }}</h5>
+          </div>
+            <p class="ml-auto mr-2">Sub total : ${{ item.sub_total }} </p>
+            {% if forloop.last %}
+            <hr>
+            <p class="ml-auto mr-3"><strong> Status : {{ order.status }}</strong></p>
+            <p class="ml-auto mr-3"><strong>Total : $ {{ order.total_cost }}(with shipping charge)</strong></p>
+
+            {% if  order.cash == 'cash' %}
+            <p class="ml-auto mr-3"><strong> Cash on delivery </strong></p>
+            {% endif %}
+
+            {% if  order.cash == 'PayPal' %}
+            <p class="ml-auto mr-3"><strong> Paid by PayPal </strong></p>
+            {% endif %}
+
+            {% endif %}
+            {% endfor %}
+        </div>
+      {% endfor %}
+  </div>
+</div>
+
+
+{%  endblock content %}
