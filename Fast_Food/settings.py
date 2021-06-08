@@ -168,6 +168,6 @@ git remote add origin git@github.com:TayeburAH/food_website.git
 git branch -M master
 git push -u origin master
 From Git Bash
-fetch origin/master
-merge origin
+fetch 
+merge 
 '''
