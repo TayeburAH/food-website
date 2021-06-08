@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: food
+Version: 0.0.11
+Summary: yum
+Home-page: https://repl.it/@mat1
+Author: mat
+Author-email: fake@email.lol
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+i like food
+
+
