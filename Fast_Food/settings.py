@@ -167,7 +167,7 @@ Copy paste the code from the git page (similar to bottom and run in on git bash)
 git remote add origin git@github.com:TayeburAH/food_website.git
 git branch -M master
 git push -u origin master
-From Git Bash
+From Git pycharm
 fetch 
 merge 
 '''
