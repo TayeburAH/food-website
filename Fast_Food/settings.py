@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'lub6p8i@cl7b$a310&#_%j-@c50x92q@*bcdxzhk!h1hl-$2*t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1','food-mania-tayebur.herokuapp.com']
 
